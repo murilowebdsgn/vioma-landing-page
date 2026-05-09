@@ -809,8 +809,8 @@
       .reviews-summary { width: 100%; }
       .reviews-summary__label { font-size: 1.5rem; }
       .reviews-summary__stars { font-size: 2.2rem; }
-      .reviews-carousel-wrapper { gap: 8px; }
-      .reviews-carousel { overflow: hidden; }
+      .reviews-carousel-wrapper { gap: 8px; min-width: 0; width: 100%; }
+      .reviews-carousel { overflow: hidden; min-width: 0; }
 
       /* Grids → 1 coluna */
       .specialties__grid { grid-template-columns: 1fr; }
@@ -1104,7 +1104,7 @@
           <div class="reviews-summary__stars">★★★★★</div>
           <p class="reviews-summary__count">Baseado em <strong>9 avaliações</strong></p>
           <p class="reviews-summary__google">
-            <span style="color:#4285F4">G</span><span style="color:#EA4335">o</span><span style="color:#FBBC05">o</span><span style="color:#4285F4">g</span><span style="color:#34A853">l</span><span style="color:#EA4335">e</span>
+            <img src="google.png" alt="Google Reviews" style="height: 24px; width: auto;" />
           </p>
         </div>
 
@@ -1120,7 +1120,7 @@
                     <p class="review-card__name">Angélica Brancalione</p>
                     <p class="review-card__date">Guia Local · Há 2 meses</p>
                   </div>
-                  <span class="review-card__g"><span style="color:#4285F4">G</span></span>
+                  <span class="review-card__g"><img src="google.png" alt="Google" style="height: 20px; width: auto;" /></span>
                 </div>
                 <div class="review-card__stars">★★★★★</div>
                 <p class="review-card__text">"A clínica é super completa e muito bem organizada. Dá pra ver que os profissionais são realmente qualificados e passam muita confiança no atendimento. Os serviços têm um diferencial, tudo é pensado de forma personalizada."</p>
@@ -1133,7 +1133,7 @@
                     <p class="review-card__name">Laura Kummer</p>
                     <p class="review-card__date">Há 2 meses</p>
                   </div>
-                  <span class="review-card__g"><span style="color:#4285F4">G</span></span>
+                  <span class="review-card__g"><img src="google.png" alt="Google" style="height: 20px; width: auto;" /></span>
                 </div>
                 <div class="review-card__stars">★★★★★</div>
                 <p class="review-card__text">"Ótimo espaço! Ambiente super aconchegante e o atendimento das profissionais é excelente!"</p>
@@ -1146,7 +1146,7 @@
                     <p class="review-card__name">Victoria Degani Domingos</p>
                     <p class="review-card__date">Há 2 meses</p>
                   </div>
-                  <span class="review-card__g"><span style="color:#4285F4">G</span></span>
+                  <span class="review-card__g"><img src="google.png" alt="Google" style="height: 20px; width: auto;" /></span>
                 </div>
                 <div class="review-card__stars">★★★★★</div>
                 <p class="review-card__text">"Recomendo muito!!"</p>
@@ -1159,7 +1159,7 @@
                     <p class="review-card__name">Diane Dorigon</p>
                     <p class="review-card__date">Há 2 meses</p>
                   </div>
-                  <span class="review-card__g"><span style="color:#4285F4">G</span></span>
+                  <span class="review-card__g"><img src="google.png" alt="Google" style="height: 20px; width: auto;" /></span>
                 </div>
                 <div class="review-card__stars">★★★★★</div>
                 <p class="review-card__text">"Clínica aconchegante e com venda de suplementos de ótima qualidade."</p>
@@ -1172,7 +1172,7 @@
                     <p class="review-card__name">Ronaldo Domingos</p>
                     <p class="review-card__date">Há 2 meses</p>
                   </div>
-                  <span class="review-card__g"><span style="color:#4285F4">G</span></span>
+                  <span class="review-card__g"><img src="google.png" alt="Google" style="height: 20px; width: auto;" /></span>
                 </div>
                 <div class="review-card__stars">★★★★★</div>
                 <p class="review-card__text">"Muito bom atendimento."</p>
@@ -1185,7 +1185,7 @@
                     <p class="review-card__name">Diane Dorigon</p>
                     <p class="review-card__date">Há 2 meses</p>
                   </div>
-                  <span class="review-card__g"><span style="color:#4285F4">G</span></span>
+                  <span class="review-card__g"><img src="google.png" alt="Google" style="height: 20px; width: auto;" /></span>
                 </div>
                 <div class="review-card__stars">★★★★★</div>
                 <p class="review-card__text">"Lugar aconchegante!"</p>
@@ -1198,7 +1198,7 @@
                     <p class="review-card__name">Vitor Domingos</p>
                     <p class="review-card__date">Há 2 meses</p>
                   </div>
-                  <span class="review-card__g"><span style="color:#4285F4">G</span></span>
+                  <span class="review-card__g"><img src="google.png" alt="Google" style="height: 20px; width: auto;" /></span>
                 </div>
                 <div class="review-card__stars">★★★★★</div>
                 <p class="review-card__text">"Top o local!"</p>
@@ -1396,10 +1396,21 @@
 
       function init() {
         ipv = getIPV();
+        // Força reflow para garantir offsetWidth correto
+        void carousel.offsetHeight;
         setWidths();
         buildDots();
         goTo(0, false);
       }
+
+      // ResizeObserver para recalcular quando o carousel redimensiona
+      const resizeObs = new ResizeObserver(() => {
+        if (carousel.offsetWidth > 0) {
+          setWidths();
+          goTo(current, false);
+        }
+      });
+      resizeObs.observe(carousel);
 
       nextBtn.addEventListener('click', () => goTo(current + 1));
 
